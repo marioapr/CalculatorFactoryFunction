@@ -1,72 +1,42 @@
-function createCalculator(){
-    return {
-        input: document.querySelector('.input'),
+function Calculator(){
+    this.input = document.querySelector('.input');
 
-        start(){
-        this.clickButton();
-        this.enterPress()
-        },
 
-        enterPress(){
-            this.input.addEventListener('keyup',e =>{
-                if(e.keyCode === 13){
-                    this.equal()
-                }
-            })
-        },
-        
-        clickButton(){
-            document.addEventListener('click', (e)=>{
-                const el = e.target
+    this.numToInput = value =>  this.input.value += value;
 
-                if(el.classList.contains('btn-num')){
-                    this.numToInput(el.innerText)
-                };
+    this.delete = () => this.input.value = this.input.value.slice(0, -1);
 
-                if(el.classList.contains('btn-clear')){
-                    this.clear()
-                }
-                if(el.classList.contains('btn-del')){
-                    this.delete()
-                }
-                if(el.classList.contains('btn-eq')){
-                    this.equal()
-                }
-            })
-        },
+    this.clear = () => this.input.value = "";
 
-        numToInput(value){
-            this.input.value += value;
-        },
+    this.equal = () => {
+        let conta = this.input.value;
 
-        clear(){
-            this.input.value = ''
-        },
+        try {
+            conta = eval(conta)
 
-        delete(){
-            this.input.value = this.input.value.slice(0,-1)
-        },
-
-        equal(){
-            let conta = this.input.value
-
-            try {
-                conta = eval(conta)
-
-                if(!conta){
-                    alert('Conta Invalida');
-                    return;
-                }
-
-            this.input.value = conta
-            } catch (error) {
-                alert('Conta Invalida');
-                return;
-            }
+            this.input.value = conta;
+        } catch (error) {
+            alert('Conta Invalida')
+            return 
         }
     }
+
+    this.capClicks = () => {
+        document.addEventListener('click', e =>{
+            const el = e.target;
+
+            if(el.classList.contains('btn-num')) this.numToInput(el.innerText);
+            if(el.classList.contains('btn-del')) this.delete();
+            if(el.classList.contains('btn-clear')) this.clear();
+            if(el.classList.contains('btn-eq')) this.equal();
+        });
+    };
+
+    this.start = () => {
+        this.capClicks()
+    };
+
 };
 
-const calculator = createCalculator()
-
+const calculator = new Calculator();
 calculator.start()
